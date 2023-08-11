@@ -38,5 +38,27 @@ for(let i=0;i<items.length;i++){
 let item5 =  document.getElementsByTagName("li");
 item5[4].style.backgroundColor = "red";
 
+let input = document.querySelector('input[type="submit"]');
+input.value = "GO";
+
+let item2 = document.querySelector(".list-group-item:nth-child(2)");
+item2.style.backgroundColor="green";
+let item3 = document.querySelector(".list-group-item:nth-child(3)");
+item3.style.display="none";
+
+
+let item2qall = document.querySelectorAll(".list-group-item")[1];
+item2qall.style.backgroundColor="green";
+
+let odd = document.querySelectorAll("li:nth-child(odd)");
+
+for(let i=0;i<odd.length;i++){
+    odd[i].style.backgroundColor="green";
+}
+
+
+
+
+
 
 
