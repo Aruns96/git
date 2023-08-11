@@ -32,3 +32,11 @@ for(let i=0;i<items.length;i++){
     items[i].style.fontWeight="bold";
 }
 
+// let item5 = document.getElementsByClassName("item5");
+// item5.style.backgroundColor = "red";
+
+let item5 =  document.getElementsByTagName("li");
+item5[4].style.backgroundColor = "red";
+
+
+
