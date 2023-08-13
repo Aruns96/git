@@ -1,15 +1,18 @@
 let form = document.getElementById("addForm");
-let items = document.getElementById("items");
+var itemsList = document.getElementById("items");
+let filter = document.getElementById("filter");
 
 
 form.addEventListener("submit",(e)=>{
     e.preventDefault();
     let newItem = document.getElementById("item").value;
+    let newItem2 = document.getElementById("description").value;
 
     let li = document.createElement("li");
     li.className="list-group-item";
 
     li.appendChild(document.createTextNode(newItem));
+    li.appendChild(document.createTextNode(" " + newItem2));
 
 
     let delBtn = document.createElement("button");
@@ -28,11 +31,29 @@ form.addEventListener("submit",(e)=>{
 
 });
 
-items.addEventListener("click",(e)=>{
+itemsList.addEventListener("click",(e)=>{
     if(e.target.classList.contains("delete")){
         if(confirm("Are you Sure?")){
             let li = e.target.parentElement;
-            items.removeChild(li);
+            itemsList.removeChild(li);
         }
     }
+});
+
+filter.addEventListener("keyup",(e)=>{
+    let text = e.target.value.toLowerCase();
+    
+
+    let items = itemsList.getElementsByTagName("li");
+
+    Array.from(items).forEach((item)=>{
+        let itemName = item.firstChild.textContent;
+        let itemName2 = item.childNodes[1].textContent;
+        if(itemName.toLowerCase().indexOf(text) != -1 || itemName2.toLowerCase().indexOf(text) != -1){
+            item.style.display = "block";
+        }else{
+            item.style.display = "none";
+        }
+
+    })
 });
