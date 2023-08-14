@@ -5,6 +5,13 @@ const email = document.querySelector("#email");
 
 form.addEventListener("submit",(e)=>{
     e.preventDefault();
-    localStorage.setItem("username",nam.value);
-    localStorage.setItem("useremail",email.value);
+
+    let obj = {
+        username : nam.value,
+        useremail : email.value
+    }
+
+    let objS = JSON.stringify(obj);
+    localStorage.setItem("userdetails",objS);
+    
 });
