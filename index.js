@@ -18,6 +18,7 @@ form.addEventListener("submit",(e)=>{
 
     let objS = JSON.stringify(obj);
     localStorage.setItem(email.value,objS);
+    
     nam.value = "";
     email.value = "";
     phone.value = "";
