@@ -1,53 +1,68 @@
-const form = document.querySelector("#my-form");
-const number = document.querySelector("#number");
-const desc = document.querySelector("#desc");
-const typeExp = document.querySelector("#type-expense");
-const users = document.querySelector("#users");
-form.addEventListener("submit",(e)=>{
-    e.preventDefault();
-    const li = document.createElement("li");
-    li.appendChild(document.createTextNode(`${number.value},${desc.value},${typeExp.value}`));
-    const btn = document.createElement("input");
-    btn.setAttribute("type","button");
-    btn.setAttribute("value","delete");
-    btn.setAttribute("class","delete");
-    btn.appendChild(document.createTextNode("Delete"));
-    li.appendChild(btn);
+const posts = [
+    {title : "post1" , body : "this is post 1" ,lastactivitytime : new Date().getTime()},
+    {title : "post2" , body : "this is post 2" ,lastactivitytime : new Date().getTime()}
+]
+function getPosts(){
+setTimeout(()=>{
+    let output = "";
 
-    const editBtn = document.createElement("input");
-    editBtn.setAttribute("type","button");
-    editBtn.setAttribute("value","edit");
-    editBtn.setAttribute("class","edit");
-    editBtn.appendChild(document.createTextNode("Edit"));
-    li.appendChild(editBtn);
+    posts.forEach(
+        (post)=>{
+            output += `<li>${post.title} -last updated ${(new Date().getTime() - post.lastactivitytime)/1000} seconds ago</li>`;
+        }
+    );
+document.body.innerHTML=output;
+},1000
+)
 
-    users.appendChild(li);
-    var obj = {
-        number : number.value,
-        desc : desc.value,
-        typeExp : typeExp.value
-    }
-    
-    localStorage.setItem(desc.value,JSON.stringify(obj));
-    number.value = "";
-    desc.value = "";
-    typeExp.value = "";
-   
-    btn.onclick=(e)=>{
-        let li = e.target.parentElement;
-        users.removeChild(li);
-        let rmv = obj.desc; 
-        localStorage.removeItem(rmv); 
-    }
-    editBtn.onclick=(e)=>{
-        let li = e.target.parentElement;
-        users.removeChild(li);
-        let rmv = obj.desc; 
-        localStorage.removeItem(rmv); 
-        number.value = obj.number;
-        desc.value = obj.desc;
-        typeExp.value = obj.typeExp;
-    }
+}
 
-});
+
+function createPost(post){
+    return  new Promise((resolve,reject)=>{
+        setTimeout(() => {
+             posts.push({...post,lastactivitytime : new Date().getTime()});
+             const err = false;
+             if(!err){
+                resolve();
+             }else{
+                reject("error:something went wrong");
+             }
+             
+            },2000
+          )
+    } )
+  
+}
+
+function deletePost(){
+    return new Promise((resolve,reject)=>{
+       setTimeout(()=>{
+        if(posts.length !==0){
+            resolve(posts.pop())
+        }
+        else{
+            reject("no items to delete")
+        }
+
+       },2000)
+    })
+}
+
+
+function updateLastUserActivityTime(){
+    return new Promise((resolve,reject)=>{
+        setTimeout(()=>{
+          posts.lastactivitytime = new Date().getTime();
+          resolve(posts.lastactivitytime)
+        },1000)
+    })
+}
+
+Promise.all([createPost({title: 'Post Five', body: 'This is Post Five'}), updateLastUserActivityTime()])
+.then(getPosts)
+.catch(err => console.log(err))
+.then(deletePost)
+.catch(err => console.log(err))
+
 
