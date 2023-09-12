@@ -6,19 +6,90 @@
   <title>Document</title>
 </head>
 <body>
-<form action="#" id="my-form">
+<form onsubmit="saveToLocal(event)" >
   <label for="name">Name</label>
-  <input type="text" id ="name">
+  <input type="text" id="name" name="name">
   <label for="email">Email</label>
-  <input type="text" id ="email">
+  <input type="text" id ="email"name="email">
   <label for="phone">Phone NO</label>
-  <input type="text" id ="phone">
-  <input type="submit" value="submit" class="btn">
+  <input type="text" id="phone" name="phone">
+  <button >submit </button>
 </form>
 
-<ul id="users"></ul>
+<ul id="listItems"></ul>
 
- <script src="main1.js"></script> 
+
+
+ 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+ <script >
+   function saveToLocal(event){
+    event.preventDefault();
+    const name = event.target.name.value;
+    const email = event.target.email.value;
+    const phone = event.target.phone.value;
+
+   const obj = {
+    name,
+    email,
+    phone
+   }
+
+    //localStorage.setItem(obj.email,JSON.stringify(obj));
+    axios.post("https://crudcrud.com/api/969b6893e4ef4135950cfb0d6e8c80d6/appData" ,{obj})
+    .then(res =>{
+        showItems(obj);
+        console.log(res);
+    })
+    .catch(e => console.log(e))
+    
+
+
+   }
+
+    
+
+
+   function showItems(user){
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("phone").value = "";
+    const parentElement = document.getElementById("listItems");
+    const chidElemetn = document.createElement("li");
+    chidElemetn.textContent = `${user.name}-${user.email}-${user.phone}`;
+    
+
+   const deleteButton = document.createElement("input");
+   deleteButton.type = "button";
+   deleteButton.value = "delete";
+   deleteButton.onclick = ()=>{
+    localStorage.removeItem(user.email);
+    parentElement.removeChild(chidElemetn)
+   }
+   const editButton = document.createElement("input");
+   editButton.type = "button";
+   editButton.value = "edit";
+   editButton.onclick = ()=>{
+    localStorage.removeItem(user.email);
+    parentElement.removeChild(chidElemetn);
+    document.getElementById("name").value = user.name;
+    document.getElementById("email").value = user.email;
+    document.getElementById("phone").value = user.phone;
+   }
+    
+    chidElemetn.appendChild(deleteButton);
+    chidElemetn.appendChild(editButton);
+    parentElement.appendChild(chidElemetn);
+   }
+   document.addEventListener("DOMContentLoaded",()=>{
+        axios.get("https://crudcrud.com/api/969b6893e4ef4135950cfb0d6e8c80d6/appData").then(res =>{
+           for(let i=0; i< res.data.length ;i++){
+            showItems(res.data[i]);
+           }
+           console.log(res.data)
+        })
+        .catch(e=>console.log(e))
+    })
+ </script> 
 </body>
 </html>
