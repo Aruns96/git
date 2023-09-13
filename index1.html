@@ -36,7 +36,7 @@
    }
 
     //localStorage.setItem(obj.email,JSON.stringify(obj));
-    axios.post("https://crudcrud.com/api/969b6893e4ef4135950cfb0d6e8c80d6/appData" ,{obj})
+    axios.post("https://crudcrud.com/api/6ccca8d8fe9443bb923972bc7a5eee52/appData" ,{obj})
     .then(res =>{
         showItems(obj);
         console.log(res);
@@ -51,30 +51,39 @@
 
 
    function showItems(user){
+    
     document.getElementById("name").value = "";
     document.getElementById("email").value = "";
     document.getElementById("phone").value = "";
     const parentElement = document.getElementById("listItems");
     const chidElemetn = document.createElement("li");
-    chidElemetn.textContent = `${user.name}-${user.email}-${user.phone}`;
+    chidElemetn.textContent = `${user.obj.name}-${user.obj.email}-${user.obj.phone}`;
     
 
    const deleteButton = document.createElement("input");
    deleteButton.type = "button";
    deleteButton.value = "delete";
    deleteButton.onclick = ()=>{
-    localStorage.removeItem(user.email);
+    const delId = user._id;
+    axios.delete(`https://crudcrud.com/api/6ccca8d8fe9443bb923972bc7a5eee52/appData/${delId}`).then(res=>{
+        for(let i=0; i< res.data.length ;i++){
+            showItems(res.data[i]);
+           }
+        console.log(res.data);
+
+    })
+    //localStorage.removeItem(user.email);
     parentElement.removeChild(chidElemetn)
    }
    const editButton = document.createElement("input");
    editButton.type = "button";
    editButton.value = "edit";
    editButton.onclick = ()=>{
-    localStorage.removeItem(user.email);
+    //localStorage.removeItem(user.email);
     parentElement.removeChild(chidElemetn);
-    document.getElementById("name").value = user.name;
-    document.getElementById("email").value = user.email;
-    document.getElementById("phone").value = user.phone;
+    document.getElementById("name").value = user.obj.name;
+    document.getElementById("email").value = user.obj.email;
+    document.getElementById("phone").value = user.obj.phone;
    }
     
     chidElemetn.appendChild(deleteButton);
@@ -82,7 +91,7 @@
     parentElement.appendChild(chidElemetn);
    }
    document.addEventListener("DOMContentLoaded",()=>{
-        axios.get("https://crudcrud.com/api/969b6893e4ef4135950cfb0d6e8c80d6/appData").then(res =>{
+        axios.get("https://crudcrud.com/api/6ccca8d8fe9443bb923972bc7a5eee52/appData").then(res =>{
            for(let i=0; i< res.data.length ;i++){
             showItems(res.data[i]);
            }
