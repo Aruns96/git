@@ -36,7 +36,7 @@
    }
 
     //localStorage.setItem(obj.email,JSON.stringify(obj));
-    axios.post("https://crudcrud.com/api/6ccca8d8fe9443bb923972bc7a5eee52/appData" ,{obj})
+    axios.post("https://crudcrud.com/api/572d953087084b01b920f9580d326b0d/appData" ,{obj})
     .then(res =>{
         showItems(obj);
         console.log(res);
@@ -51,13 +51,20 @@
 
 
    function showItems(user){
+
+    
     
     document.getElementById("name").value = "";
     document.getElementById("email").value = "";
     document.getElementById("phone").value = "";
     const parentElement = document.getElementById("listItems");
     const chidElemetn = document.createElement("li");
-    chidElemetn.textContent = `${user.obj.name}-${user.obj.email}-${user.obj.phone}`;
+    if(user.name === undefined){
+        chidElemetn.textContent = `${user.obj.name}-${user.obj.email}-${user.obj.phone}`;
+    }else{
+        chidElemetn.textContent = `${user.name}-${user.email}-${user.phone}`;
+    }
+    
     
 
    const deleteButton = document.createElement("input");
@@ -65,7 +72,7 @@
    deleteButton.value = "delete";
    deleteButton.onclick = ()=>{
     const delId = user._id;
-    axios.delete(`https://crudcrud.com/api/6ccca8d8fe9443bb923972bc7a5eee52/appData/${delId}`).then(res=>{
+    axios.delete(`https://crudcrud.com/api/572d953087084b01b920f9580d326b0d/appData/${delId}`).then(res=>{
         for(let i=0; i< res.data.length ;i++){
             showItems(res.data[i]);
            }
@@ -79,11 +86,26 @@
    editButton.type = "button";
    editButton.value = "edit";
    editButton.onclick = ()=>{
+    const delId = user._id;
+    axios.delete(`https://crudcrud.com/api/572d953087084b01b920f9580d326b0d/appData/${delId}`).then(res=>{
+        // for(let i=0; i< res.data.length ;i++){
+        //     showItems(res.data[i]);
+        //    }
+        console.log(res.data);
+    })
     //localStorage.removeItem(user.email);
+
     parentElement.removeChild(chidElemetn);
-    document.getElementById("name").value = user.obj.name;
-    document.getElementById("email").value = user.obj.email;
-    document.getElementById("phone").value = user.obj.phone;
+    if(user.name === undefined){
+        document.getElementById("name").value = user.obj.name;
+        document.getElementById("email").value = user.obj.email;
+         document.getElementById("phone").value = user.obj.phone;
+    }else{
+        document.getElementById("name").value = user.name;
+        document.getElementById("email").value = user.email;
+         document.getElementById("phone").value = user.phone;
+    }
+    
    }
     
     chidElemetn.appendChild(deleteButton);
@@ -91,7 +113,7 @@
     parentElement.appendChild(chidElemetn);
    }
    document.addEventListener("DOMContentLoaded",()=>{
-        axios.get("https://crudcrud.com/api/6ccca8d8fe9443bb923972bc7a5eee52/appData").then(res =>{
+        axios.get("https://crudcrud.com/api/572d953087084b01b920f9580d326b0d/appData").then(res =>{
            for(let i=0; i< res.data.length ;i++){
             showItems(res.data[i]);
            }
