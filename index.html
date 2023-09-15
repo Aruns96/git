@@ -1,44 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <title>Axios Crash Course</title>
-  </head>
-  <body>
-    <div class="container my-5">
-      <div class="text-center">
-        <h1 class="display-4 text-center mb-3">Axios Crash Course</h1>
-        <button class="btn btn-primary my-3" id="get">GET</button>
-        <button class="btn btn-info" id="post">POST</button>
-        <button class="btn btn-warning" id="update">PUT/PATCH</button>
-        <button class="btn btn-danger" id="delete">DELETE</button>
-        <button class="btn btn-secondary" id="sim">Sim Requests</button>
-        <button class="btn btn-secondary" id="headers">
-          Custom Headers
-        </button>
-        <button class="btn btn-secondary" id="transform">
-          Transform
-        </button>
-        <button class="btn btn-secondary" id="error">
-          Error Handling
-        </button>
-        <button class="btn btn-secondary" id="cancel">
-          Cancel
-        </button>
-      </div>
-      <hr />
-      <div id="res"></div>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products</title>
+</head>
+<body>
+<form onsubmit="saveToLocal(event)" >
+  <label for="price">Selling Price</label>
+  <input type="number" id="price" name="price">
+  <label for="name">Product Name</label>
+  <input type="text" id ="name" name="name">
+  
+  <button >Add product </button>
+</form>
+<h2>Products</h2>
+<ul id="listItems"></ul>
+<h3 id="productPrice"></h3>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-    <script src="main.js"></script>
-  </body>
+
+
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+ <script >
+   function saveToLocal(event){
+
+            event.preventDefault();
+
+            const price = event.target.price.value;
+            const name = event.target.name.value;
+            
+
+          const obj = {
+            price,
+            name
+          }
+
+          
+            axios.post("https://crudcrud.com/api/e607fa6a337e46d6935734d11f872495/productData" ,{obj})
+            .then(res =>{
+                showItems(obj);
+                console.log(res);
+
+
+
+
+                axios.get("https://crudcrud.com/api/e607fa6a337e46d6935734d11f872495/productData").then(res =>{
+        
+      
+       let itemPrice = 0;
+          if(res.data.name==undefined)
+          {
+            for(let i=0;i<res.data.length;i++){
+            itemPrice += Number(res.data[i].obj.price) ;
+           }
+          }else{
+            for(let i=0;i<res.data.length;i++){
+            itemPrice += Number(res.data[i].price) ;
+           }
+          }
+          
+               
+             
+              console.log(itemPrice)
+              const product = document.getElementById("productPrice");
+              product.innerHTML = `Total value of the Products : Rs ${itemPrice}`
+    })
+    .catch(e=>console.log(e))
+
+                
+                
+               
+            })
+            .catch(e => console.log(e))
+
+            
+            
+
+
+   }
+   function showItems(pro){
+
+    
+          document.getElementById("price").value = "";
+          document.getElementById("name").value = "";
+          
+          const parentElement = document.getElementById("listItems");
+          const chidElemetn = document.createElement("li");
+
+          if(pro.name === undefined){
+              chidElemetn.textContent = `${pro.obj.price}-${pro.obj.name}`;
+          }else{
+              chidElemetn.textContent = `${pro.price}-${pro.name}`;
+          }
+
+
+
+          const deleteButton = document.createElement("input");
+          deleteButton.type = "button";
+          deleteButton.value = "delete";
+          deleteButton.onclick = ()=>{
+          const delId = pro._id;
+          axios.delete(`https://crudcrud.com/api/e607fa6a337e46d6935734d11f872495/productData/${delId}`).then(res=>{
+              
+              let itemPrice = 0;
+          if(res.data.name==undefined)
+          {
+            for(let i=0;i<res.data.length;i++){
+            itemPrice -= Number(res.data[i].obj.price) ;
+           }
+          }else{
+            for(let i=0;i<res.data.length;i++){
+            itemPrice -= Number(res.data[i].price) ;
+           }
+          }
+          
+               
+             
+              console.log(itemPrice)
+              const product = document.getElementById("productPrice");
+              product.innerHTML = `Total value of the Products : Rs ${itemPrice}`
+              for(let i=0; i< res.data.length ;i++){
+                  showItems(res.data[i]);
+                }
+              console.log(res.data);
+
+          })
+          
+          parentElement.removeChild(chidElemetn)
+          }
+         
+          
+          chidElemetn.appendChild(deleteButton);
+          
+          parentElement.appendChild(chidElemetn);
+          
+          
+          
+         
+           
+          
+       
+
+         
+
+          }
+
+
+             
+
+    
+        
+
+document.addEventListener("DOMContentLoaded",()=>{
+    axios.get("https://crudcrud.com/api/e607fa6a337e46d6935734d11f872495/productData").then(res =>{
+       for(let i=0; i< res.data.length ;i++){
+        showItems(res.data[i]);
+
+       }
+       console.log(res.data)
+       let itemPrice = 0;
+          if(res.data.name==undefined)
+          {
+            for(let i=0;i<res.data.length;i++){
+            itemPrice += Number(res.data[i].obj.price) ;
+           }
+          }else{
+            for(let i=0;i<res.data.length;i++){
+            itemPrice += Number(res.data[i].price) ;
+           }
+          }
+          
+               
+             
+              console.log(itemPrice)
+              const product = document.getElementById("productPrice");
+              product.innerHTML = `Total value of the Products : Rs ${itemPrice}`
+    })
+    .catch(e=>console.log(e))
+})
+ </script> 
+</body>
 </html>
